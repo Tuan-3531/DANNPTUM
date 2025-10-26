@@ -8,7 +8,7 @@ async function loadProducts() {
       <img src="${p.image}" width="150">
       <h3>${p.name}</h3>
       <p>${p.price.toLocaleString()}đ</p>
-      <a href="product.html?id=${p.id}">Xem chi tiết</a>
+      <a href="product.html?id=${p._id}">Xem chi tiết</a>
     </div>
   `).join('');
 }

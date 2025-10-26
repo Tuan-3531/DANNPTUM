@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang quản trị sản phẩm</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Quản lý sản phẩm</h1>
+
+  <h3>Thêm / Sửa sản phẩm</h3>
+  <form id="product-form">
+    <input type="hidden" id="product-id">
+    <label>Tên sản phẩm:</label><br>
+    <input type="text" id="name" required><br>
+
+    <label>Giá:</label><br>
+    <input type="number" id="price" required><br>
+
+    <label>Ảnh (URL):</label><br>
+    <input type="text" id="image"><br>
+
+    <label>Mô tả:</label><br>
+    <textarea id="description"></textarea><br>
+
+    <button type="submit">Lưu</button>
+    <button type="button" id="cancel-edit" style="display:none;">Hủy</button>
+  </form>
+
+  <hr>
+  <h3>Danh sách sản phẩm</h3>
+  <table border="1" width="100%" id="product-table">
+    <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Giá</th>
+        <th>Ảnh</th>
+        <th>Mô tả</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

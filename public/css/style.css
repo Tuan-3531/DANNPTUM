@@ -15,3 +15,18 @@ body {
 .product img {
   border-radius: 8px;
 }
+.product-detail {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-top: 20px;
+  width: 400px;
+}
+
+.product-detail img {
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.product-detail h2 {
+  text-align: center;
+}
