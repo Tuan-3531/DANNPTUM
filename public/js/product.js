@@ -1,6 +1,8 @@
 // Lấy tham số id từ URL, ví dụ: product.html?id=123
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
+const userId = localStorage.getItem("userId"); // ID người dùng đã đăng nhập
+const productList = document.getElementById("product-list");
 
 async function loadProductDetail() {
   if (!id) {

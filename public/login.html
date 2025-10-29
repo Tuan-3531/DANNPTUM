@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập / Đăng ký</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .toggle-link {
+      margin-top: 10px;
+      display: block;
+      color: #007bff;
+      cursor: pointer;
+    }
+
+    #message {
+      color: red;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="formTitle">Đăng nhập</h2>
+
+    <div id="loginForm">
+      <input type="text" id="loginUsername" placeholder="Tên đăng nhập" required><br>
+      <input type="password" id="loginPassword" placeholder="Mật khẩu" required><br>
+      <button onclick="login()">Đăng nhập</button>
+      <span class="toggle-link" onclick="toggleForm('register')">Chưa có tài khoản? Đăng ký</span>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <input type="text" id="registerUsername" placeholder="Tên đăng nhập" required><br>
+      <input type="email" id="registerEmail" placeholder="Email" required><br>
+      <input type="password" id="registerPassword" placeholder="Mật khẩu" required><br>
+      <button onclick="register()">Đăng ký</button>
+      <span class="toggle-link" onclick="toggleForm('login')">Đã có tài khoản? Đăng nhập</span>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

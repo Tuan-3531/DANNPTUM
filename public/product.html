@@ -4,15 +4,40 @@
   <meta charset="UTF-8">
   <title>Chi tiết sản phẩm</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Hiển thị tên user ở góc trên bên phải */
+    #user-name {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-weight: bold;
+      background-color: #f0f0f0;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
+  <div id="user-name"></div> <!-- ← chỗ hiển thị tên người dùng -->
+
   <a href="index.html">⬅️ Quay lại trang chủ</a>
   <h1>Chi tiết sản phẩm</h1>
 
   <div id="product-detail" class="product-detail">
     <!-- Thông tin sản phẩm sẽ được load bằng JS -->
   </div>
+  <a href="cart.html">
+    <button class="view-cart-btn">🛒 Xem giỏ hàng</button>
+  </a>
 
   <script src="js/product.js"></script>
+  <script>
+    // Hiển thị tên user nếu đã login
+    const userNameDiv = document.getElementById('user-name');
+    const username = localStorage.getItem('username'); // Lấy tên user từ localStorage
+    if (username) {
+      userNameDiv.textContent = `Xin chào, ${username}`;
+    }
+  </script>
 </body>
 </html>
