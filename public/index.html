@@ -4,28 +4,16 @@
   <meta charset="UTF-8">
   <title>Shop Quạt - Trang chủ</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    /* Nút đăng nhập hoặc hiển thị tên user góc trên bên phải */
-    #user-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      background-color: #007bff;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    #user-btn:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  
 </head>
 <body>
-  <button id="user-btn">Đăng nhập</button> <!-- ban đầu là Đăng nhập -->
+  <button id="user-btn">Đăng nhập</button>
+  <a href="orders.html">
+  <button>📦 Xem đơn hàng</button>
+</a>
+ <!-- ban đầu là Đăng nhập -->
+  <h1 id="user-name"></h1>
+  <button id="logoutBtn" class="user-btn">Đăng xuất</button>
 
   <h1>Danh sách sản phẩm</h1>
   <div id="product-list"></div>
@@ -34,9 +22,10 @@
   <script>
     const userBtn = document.getElementById('user-btn');
     const username = localStorage.getItem('username'); // tên user lưu khi login
-
+    const userName = document.getElementById('user-name');
     if (username) {
-      userBtn.textContent = username; // hiển thị tên user
+      userName.textContent = username; 
+      userBtn.textContent = "Giỏ hàng"// hiển thị tên user
       userBtn.onclick = () => {
         window.location.href = "cart.html"; // click vào tên user chuyển sang giỏ hàng
       };

@@ -49,6 +49,16 @@ async function addToCart(productId) {
     alert("❌ " + err.message);
   }
 }
+const logoutBtn = document.getElementById("logoutBtn");
 
+logoutBtn.addEventListener("click", () => {
+  // Xóa dữ liệu người dùng khỏi localStorage
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("isAdmin");
+
+  // Redirect về trang login
+  window.location.href = "login.html";
+});
 // Gọi khi trang load
 loadProducts();

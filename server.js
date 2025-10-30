@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const connectDB = require('./config/db');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = "Tuandeptraibodoiqua"; 
+const { authenticateToken, isAdmin } = require('./auth');
 
 const Product = require('./models/Product');
 const User = require('./models/User');
@@ -99,7 +102,14 @@ app.post('/api/login', async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ message: 'Sai mật khẩu' });
 
-    res.json({ message: 'Đăng nhập thành công', user });
+    // Tạo token
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ message: 'Đăng nhập thành công', token, user });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -153,7 +163,25 @@ app.post("/api/cart", async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi thêm giỏ hàng" });
   }
 });
+app.delete('/api/cart/:userId/:productId', async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    const cart = await Cart.findOne({ user: userId });
 
+    if (!cart) {
+      return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
+    }
+
+    // Lọc bỏ sản phẩm cần xóa
+    cart.items = cart.items.filter(item => item.product.toString() !== productId);
+
+    await cart.save();
+    res.json({ message: 'Đã xóa sản phẩm khỏi giỏ hàng', cart });
+  } catch (err) {
+    console.error('Lỗi xóa sản phẩm khỏi giỏ hàng:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
 //
 // ==================== ORDER ====================
 //
@@ -161,15 +189,54 @@ app.post("/api/cart", async (req, res) => {
 // Đặt hàng
 app.post('/api/orders', async (req, res) => {
   try {
-    const order = new Order(req.body);
+    const { userId, items, totalAmount } = req.body;
+
+    if (!userId || !items || items.length === 0) {
+      return res.status(400).json({ message: 'Thiếu thông tin đơn hàng' });
+    }
+
+    const newOrder = new Order({
+      user: userId,
+      items,
+      totalAmount,
+      status: 'Đang xử lý',
+    });
+    await newOrder.save();
+    res.status(201).json({ message: "Đặt hàng thành công!", order: newOrder });
+
+  } catch (err) {
+    console.error('Lỗi tạo đơn hàng:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+app.get('/api/orders/:userId', async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.params.userId })
+      .populate('items.product', 'name price image')
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (err) {
+    console.error("Lỗi xem đơn hàng:", err);
+    res.status(500).json({ message: err.message });
+  }
+});
+app.delete('/api/orders/:orderId', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+    if (!order) return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+
+    if (order.status === 'Đã hủy') {
+      return res.status(400).json({ message: "Đơn hàng đã bị hủy trước đó" });
+    }
+
+    order.status = 'Đã hủy';
     await order.save();
 
-    // Sau khi đặt hàng, xóa giỏ hàng của user
-    await Cart.deleteOne({ userId: req.body.userId });
-
-    res.json({ message: 'Đặt hàng thành công', order });
+    res.json({ message: "Hủy đơn hàng thành công", order });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Lỗi hủy đơn:", err);
+    res.status(500).json({ message: err.message });
   }
 });
 

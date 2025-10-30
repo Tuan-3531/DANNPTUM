@@ -69,6 +69,7 @@ async function login() {
     if (!res.ok) throw new Error(data.message);
 
     // ✅ Lưu userId và isAdmin vào localStorage
+    localStorage.setItem("token", data.token);
     localStorage.setItem("userId", data.user._id);
     localStorage.setItem("isAdmin", data.user.isAdmin);
     localStorage.setItem("username", data.user.username);
@@ -78,7 +79,11 @@ async function login() {
 
     // Chuyển về trang chủ
     setTimeout(() => {
-      window.location.href = "index.html";
+      if (data.user.isAdmin) {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "index.html";
+      }
     }, 1000);
 
   } catch (err) {

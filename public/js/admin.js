@@ -2,10 +2,13 @@ const apiUrl = '/api/products';
 const form = document.getElementById('product-form');
 const cancelEditBtn = document.getElementById('cancel-edit');
 const tbody = document.querySelector('#product-table tbody');
+const token = localStorage.getItem('token');
 
 // 🧩 Load danh sách sản phẩm
 async function loadProducts() {
-  const res = await fetch(apiUrl);
+  const res = await fetch(apiUrl, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
   const products = await res.json();
 
   tbody.innerHTML = products.map(p => `

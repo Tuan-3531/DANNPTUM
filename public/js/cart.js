@@ -1,4 +1,4 @@
-
+const token = localStorage.getItem('token');
 const userId = localStorage.getItem("userId"); // ID người dùng đăng nhập
 const cartContainer = document.getElementById("cart-container");
 const totalEl = document.getElementById("total");
@@ -36,6 +36,9 @@ async function loadCart() {
         <td>${quantity}</td>
         <td>${product.price.toLocaleString()} đ</td>
         <td>${price.toLocaleString()} đ</td>
+        <td>
+        <button onclick="removeFromCart('${product._id}')">❌ Xóa</button>
+      </td>
       </tr>`;
   });
 
@@ -43,7 +46,52 @@ async function loadCart() {
   cartContainer.innerHTML = html;
   totalEl.textContent = `Tổng cộng: ${total.toLocaleString()} đ`;
 }
+async function removeFromCart(productId) {
+  const userId = localStorage.getItem("userId");
+  if (!userId) return;
 
+  const res = await fetch(`/api/cart/${userId}/${productId}`, {
+    method: 'DELETE'
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert(data.message);
+    loadCart(); // tải lại giỏ hàng sau khi xóa
+  } else {
+    alert('Lỗi: ' + data.message);
+  }
+}
+async function placeOrder() {
+  const userId = localStorage.getItem("userId");
+  const res = await fetch("/api/cart/" + userId);
+  const cart = await res.json();
+
+  const orderData = {
+    user: userId,
+    items: cart.items.map(i => ({
+      product: i.product._id,
+      quantity: i.quantity
+    })),
+    totalAmount: cart.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+  };
+
+  const response = await fetch("/api/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(orderData)
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    alert("Lỗi đặt hàng: " + err.message);
+    return;
+  }
+
+  alert("Đặt hàng thành công!");
+  localStorage.removeItem("cart");
+  window.location.href = "orders.html";
+}
 checkoutBtn.addEventListener("click", () => {
   window.location.href = "checkout.html";
 });

@@ -2,9 +2,11 @@ const userId = localStorage.getItem("userId");
 const summaryDiv = document.getElementById("order-summary");
 const checkoutForm = document.getElementById("checkoutForm");
 const messageDiv = document.getElementById("message");
+const token = localStorage.getItem('token');
 
 let cartData = null;
 
+// Load giỏ hàng và hiển thị tóm tắt
 async function loadSummary() {
   if (!userId) {
     summaryDiv.innerHTML = "<p>Bạn cần đăng nhập trước!</p>";
@@ -37,34 +39,47 @@ async function loadSummary() {
   summaryDiv.innerHTML = html;
 }
 
+// Xử lý submit checkout form
 checkoutForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!cartData) return;
 
-  const totalPrice = cartData.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  
-  const order = {
-    user: userId,
-    products: cartData.items.map(i => ({
+  if (!cartData || cartData.items.length === 0) {
+    alert("Giỏ hàng trống!");
+    return;
+  }
+
+  const totalAmount = cartData.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  // Gửi dữ liệu đúng theo backend
+  const orderData = {
+    userId,
+    items: cartData.items.map(i => ({
       product: i.product._id,
       quantity: i.quantity
     })),
-    totalPrice
+    totalAmount
   };
 
-  const res = await fetch("/api/orders", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(order)
-  });
+  console.log("Sending order:", orderData); // debug
 
-  const result = await res.json();
-  if (res.ok) {
-    messageDiv.innerHTML = `<p style="color:green">${result.message}</p>`;
-    summaryDiv.innerHTML = "";
-    checkoutForm.reset();
-  } else {
-    messageDiv.innerHTML = `<p style="color:red">Lỗi: ${result.message}</p>`;
+  try {
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData)
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Đặt hàng thành công!");
+      window.location.href = "orders.html";
+    } else {
+      alert("Lỗi: " + data.message);
+    }
+  } catch (err) {
+    console.error("Lỗi gửi order:", err);
+    alert("Lỗi server khi đặt hàng!");
   }
 });
 
