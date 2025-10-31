@@ -1,5 +1,5 @@
 const token = localStorage.getItem('token');
-const userId = localStorage.getItem("userId"); // ID người dùng đăng nhập
+const userId = localStorage.getItem("userId");
 const cartContainer = document.getElementById("cart-container");
 const totalEl = document.getElementById("total");
 const checkoutBtn = document.getElementById("checkoutBtn");
@@ -37,7 +37,7 @@ async function loadCart() {
         <td>${product.price.toLocaleString()} đ</td>
         <td>${price.toLocaleString()} đ</td>
         <td>
-        <button onclick="removeFromCart('${product._id}')">❌ Xóa</button>
+        <button onclick="removeFromCart('${product._id}')">Xóa</button>
       </td>
       </tr>`;
   });
@@ -57,7 +57,7 @@ async function removeFromCart(productId) {
   const data = await res.json();
   if (res.ok) {
     alert(data.message);
-    loadCart(); // tải lại giỏ hàng sau khi xóa
+    loadCart();
   } else {
     alert('Lỗi: ' + data.message);
   }

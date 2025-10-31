@@ -9,9 +9,9 @@
 <body>
   <button id="user-btn">Đăng nhập</button>
   <a href="orders.html">
-  <button>📦 Xem đơn hàng</button>
+  <button>Xem đơn hàng</button>
 </a>
- <!-- ban đầu là Đăng nhập -->
+<button id="admin-btn" style="display:none;">Quản lý sản phẩm</button>
   <h1 id="user-name"></h1>
   <button id="logoutBtn" class="user-btn">Đăng xuất</button>
 
@@ -21,19 +21,23 @@
   <script src="js/main.js"></script>
   <script>
     const userBtn = document.getElementById('user-btn');
-    const username = localStorage.getItem('username'); // tên user lưu khi login
+    const username = localStorage.getItem('username');
     const userName = document.getElementById('user-name');
     if (username) {
       userName.textContent = username; 
-      userBtn.textContent = "Giỏ hàng"// hiển thị tên user
+      userBtn.textContent = "Giỏ hàng"
       userBtn.onclick = () => {
-        window.location.href = "cart.html"; // click vào tên user chuyển sang giỏ hàng
+        window.location.href = "cart.html";
       };
     } else {
       userBtn.onclick = () => {
-        window.location.href = "login.html"; // nếu chưa login, đi tới login
+        window.location.href = "login.html";
       };
     }
+    if (isAdmin === "true") {
+        adminBtn.style.display = "inline-block";
+        adminBtn.onclick = () => window.location.href = "admin.html";
+      }
   </script>
 </body>
 </html>

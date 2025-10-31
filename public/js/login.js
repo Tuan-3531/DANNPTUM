@@ -68,7 +68,6 @@ async function login() {
 
     if (!res.ok) throw new Error(data.message);
 
-    // ✅ Lưu userId và isAdmin vào localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("userId", data.user._id);
     localStorage.setItem("isAdmin", data.user.isAdmin);
@@ -77,10 +76,9 @@ async function login() {
     messageEl.style.color = "green";
     messageEl.textContent = "Đăng nhập thành công!";
 
-    // Chuyển về trang chủ
     setTimeout(() => {
       if (data.user.isAdmin) {
-        window.location.href = "admin.html";
+        window.location.href = "index.html";
       } else {
         window.location.href = "index.html";
       }

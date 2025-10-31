@@ -1,9 +1,13 @@
+const userId = localStorage.getItem("userId");
+const token = localStorage.getItem('token');
+const isAdmin = localStorage.getItem("isAdmin");
+const adminBtn = document.getElementById("admin-btn");
+
 async function loadProducts() {
   try {
     const res = await fetch('/api/products');
     const products = await res.json();
 
-    // Nếu API trả về lỗi hoặc không phải mảng
     if (!Array.isArray(products)) {
       console.error("API /api/products không trả về mảng:", products);
       return;
@@ -16,7 +20,7 @@ async function loadProducts() {
         <h3>${p.name}</h3>
         <p>${Number(p.price).toLocaleString()}đ</p>
         <a href="product.html?id=${p._id}">Xem chi tiết</a><br>
-        <button onclick="addToCart('${p._id}')">🛒 Thêm vào giỏ</button>
+        <button onclick="addToCart('${p._id}')">Thêm vào giỏ</button>
       </div>
     `).join('');
   } catch (error) {
@@ -27,9 +31,8 @@ async function loadProducts() {
 async function addToCart(productId) {
   const userId = localStorage.getItem("userId");
 
-  // Nếu chưa đăng nhập
   if (!userId) {
-    alert("⚠️ Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
+    alert("Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
     window.location.href = "login.html";
     return;
   }
@@ -43,10 +46,10 @@ async function addToCart(productId) {
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
-    alert("✅ Đã thêm sản phẩm vào giỏ hàng!");
+    alert("Đã thêm sản phẩm vào giỏ hàng!");
   } catch (err) {
     console.error("Lỗi khi thêm giỏ hàng:", err);
-    alert("❌ " + err.message);
+    alert("Lỗi:" + err.message);
   }
 }
 const logoutBtn = document.getElementById("logoutBtn");

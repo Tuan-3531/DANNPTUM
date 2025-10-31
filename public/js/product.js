@@ -1,7 +1,6 @@
-// Lấy tham số id từ URL, ví dụ: product.html?id=123
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
-const userId = localStorage.getItem("userId"); // ID người dùng đã đăng nhập
+const userId = localStorage.getItem("userId");
 const productList = document.getElementById("product-list");
 
 async function loadProductDetail() {
@@ -23,18 +22,15 @@ async function loadProductDetail() {
     <h2>${product.name}</h2>
     <p><strong>Giá:</strong> ${product.price.toLocaleString()}đ</p>
     <p>${product.description}</p>
-    <button id="addToCart">🛒 Thêm vào giỏ hàng</button>
+    <button id="addToCart">Thêm vào giỏ hàng</button>
   `;
 
-  // Thêm vào giỏ hàng
   document.getElementById('addToCart').addEventListener('click', () => addToCart(product));
 }
 
-// 🛒 Hàm thêm sản phẩm vào giỏ hàng (dùng localStorage)
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-  // Nếu sản phẩm đã có trong giỏ, tăng số lượng
   const existing = cart.find(item => item._id === product._id);
   if (existing) {
     existing.quantity += 1;

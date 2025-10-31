@@ -14,18 +14,13 @@ const Cart = require('./models/Cart');
 const app = express();
 const PORT = 3000;
 
-// ✅ Kết nối MongoDB
 connectDB();
 
-// ✅ Middleware
 app.use(express.json());
 
 
-//
-// ==================== PRODUCT ====================
-//
+// PRODUCT 
 
-// Lấy danh sách sản phẩm
 app.get('/api/products', async (req, res) => {
   try {
     const products = await Product.find();
@@ -35,7 +30,6 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-// Lấy chi tiết sản phẩm theo id
 app.get('/api/products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -46,7 +40,6 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-// Cập nhật sản phẩm
 app.put('/api/products/:id', async (req, res) => {
   try {
     const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -56,7 +49,6 @@ app.put('/api/products/:id', async (req, res) => {
   }
 });
 
-// Xóa sản phẩm
 app.delete('/api/products/:id', async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
@@ -66,7 +58,6 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
-// Thêm sản phẩm (cho admin test)
 app.post('/api/products', async (req, res) => {
   try {
     const newProduct = new Product(req.body);
@@ -77,11 +68,8 @@ app.post('/api/products', async (req, res) => {
   }
 });
 
-//
-// ==================== AUTH ====================
-//
+// XÁC THỰC
 
-// Đăng ký
 app.post('/api/register', async (req, res) => {
   try {
     const user = new User(req.body);
@@ -92,7 +80,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Đăng nhập
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -102,7 +89,6 @@ app.post('/api/login', async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ message: 'Sai mật khẩu' });
 
-    // Tạo token
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },
       JWT_SECRET,
@@ -115,14 +101,12 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-//
-// ==================== CART ====================
-//
+//  GIỎ HÀNG
 app.get('/api/cart/:userId', async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.params.userId })
       .populate('items.product', 'name price image');
-    if (!cart) return res.status(200).json({ items: [] }); // trả về mảng trống nếu chưa có giỏ
+    if (!cart) return res.status(200).json({ items: [] });
     res.json(cart);
   } catch (err) {
     console.error('Lỗi /api/cart/:userId:', err);
@@ -130,7 +114,6 @@ app.get('/api/cart/:userId', async (req, res) => {
   }
 });
 
-// 🛒 Thêm sản phẩm vào giỏ hàng
 app.post("/api/cart", async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
@@ -141,12 +124,10 @@ app.post("/api/cart", async (req, res) => {
 
     let cart = await Cart.findOne({ user: userId });
 
-    // Nếu chưa có giỏ hàng thì tạo mới
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
 
-    // Kiểm tra sản phẩm đã tồn tại trong giỏ chưa
     const existingItem = cart.items.find(item => item.product.toString() === productId);
 
     if (existingItem) {
@@ -159,7 +140,7 @@ app.post("/api/cart", async (req, res) => {
     res.json({ message: "Đã thêm vào giỏ hàng!", cart });
 
   } catch (error) {
-    console.error("❌ Lỗi khi thêm vào giỏ hàng:", error);
+    console.error("Lỗi khi thêm vào giỏ hàng:", error);
     res.status(500).json({ message: "Lỗi server khi thêm giỏ hàng" });
   }
 });
@@ -172,7 +153,6 @@ app.delete('/api/cart/:userId/:productId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
     }
 
-    // Lọc bỏ sản phẩm cần xóa
     cart.items = cart.items.filter(item => item.product.toString() !== productId);
 
     await cart.save();
@@ -182,11 +162,8 @@ app.delete('/api/cart/:userId/:productId', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-//
-// ==================== ORDER ====================
-//
+//  ĐƠN HÀNG
 
-// Đặt hàng
 app.post('/api/orders', async (req, res) => {
   try {
     const { userId, items, totalAmount } = req.body;
@@ -239,11 +216,8 @@ app.delete('/api/orders/:orderId', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-//
-// ==================== SERVER START ====================
-//
+// PHẦN TĨNH
 app.use(express.static(path.join(__dirname, 'public')));
 app.listen(PORT, () => {
-  console.log(`🌐 Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`Server đang chạy tại http://localhost:${PORT}`);
 });

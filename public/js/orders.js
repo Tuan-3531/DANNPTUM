@@ -51,7 +51,7 @@ async function cancelOrder(orderId) {
     const data = await res.json();
     if (res.ok) {
       alert("Hủy đơn hàng thành công!");
-      loadOrders(); // load lại danh sách
+      loadOrders();
     } else {
       alert("Lỗi: " + data.message);
     }

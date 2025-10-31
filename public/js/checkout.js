@@ -6,7 +6,6 @@ const token = localStorage.getItem('token');
 
 let cartData = null;
 
-// Load giỏ hàng và hiển thị tóm tắt
 async function loadSummary() {
   if (!userId) {
     summaryDiv.innerHTML = "<p>Bạn cần đăng nhập trước!</p>";
@@ -39,7 +38,6 @@ async function loadSummary() {
   summaryDiv.innerHTML = html;
 }
 
-// Xử lý submit checkout form
 checkoutForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -50,7 +48,6 @@ checkoutForm.addEventListener("submit", async (e) => {
 
   const totalAmount = cartData.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  // Gửi dữ liệu đúng theo backend
   const orderData = {
     userId,
     items: cartData.items.map(i => ({
@@ -60,7 +57,7 @@ checkoutForm.addEventListener("submit", async (e) => {
     totalAmount
   };
 
-  console.log("Sending order:", orderData); // debug
+  console.log("Sending order:", orderData);
 
   try {
     const res = await fetch("/api/orders", {

@@ -4,7 +4,6 @@ const cancelEditBtn = document.getElementById('cancel-edit');
 const tbody = document.querySelector('#product-table tbody');
 const token = localStorage.getItem('token');
 
-// 🧩 Load danh sách sản phẩm
 async function loadProducts() {
   const res = await fetch(apiUrl, {
     headers: { 'Authorization': 'Bearer ' + token }
@@ -18,14 +17,13 @@ async function loadProducts() {
       <td><img src="${p.image}" width="80"></td>
       <td>${p.description || ''}</td>
       <td>
-        <button onclick="editProduct('${p._id}')">✏️ Sửa</button>
-        <button onclick="deleteProduct('${p._id}')">🗑️ Xóa</button>
+        <button onclick="editProduct('${p._id}')">Sửa</button>
+        <button onclick="deleteProduct('${p._id}')">Xóa</button>
       </td>
     </tr>
   `).join('');
 }
 
-// ➕ Thêm hoặc cập nhật sản phẩm
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -38,14 +36,12 @@ form.addEventListener('submit', async (e) => {
   };
 
   if (id) {
-    // Sửa sản phẩm
     await fetch(`${apiUrl}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product)
     });
   } else {
-    // Thêm sản phẩm
     await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -59,7 +55,6 @@ form.addEventListener('submit', async (e) => {
   loadProducts();
 });
 
-// 📝 Sửa sản phẩm
 async function editProduct(id) {
   const res = await fetch(`${apiUrl}/${id}`);
   const p = await res.json();
@@ -72,14 +67,12 @@ async function editProduct(id) {
   cancelEditBtn.style.display = 'inline-block';
 }
 
-// ❌ Hủy sửa
 cancelEditBtn.addEventListener('click', () => {
   form.reset();
   document.getElementById('product-id').value = '';
   cancelEditBtn.style.display = 'none';
 });
 
-// 🗑️ Xóa sản phẩm
 async function deleteProduct(id) {
   if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
     await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
@@ -87,5 +80,4 @@ async function deleteProduct(id) {
   }
 }
 
-// Tải danh sách khi mở trang
 loadProducts();
