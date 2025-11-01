@@ -1,7 +1,30 @@
+
+
 const userId = localStorage.getItem("userId");
 const token = localStorage.getItem('token');
 const isAdmin = localStorage.getItem("isAdmin");
 const adminBtn = document.getElementById("admin-btn");
+async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/verify", {
+      method: "GET",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error("Token hết hạn hoặc không hợp lệ");
+
+    const data = await res.json();
+    console.log("Token hợp lệ cho:", data.user.username);
+
+  } catch (err) {
+    console.warn("Đăng nhập hết hạn:", err.message);
+    localStorage.clear();
+    window.location.href = "login.html";
+  }
+};
 
 async function loadProducts() {
   try {
@@ -55,13 +78,10 @@ async function addToCart(productId) {
 const logoutBtn = document.getElementById("logoutBtn");
 
 logoutBtn.addEventListener("click", () => {
-  // Xóa dữ liệu người dùng khỏi localStorage
   localStorage.removeItem("token");
   localStorage.removeItem("userId");
   localStorage.removeItem("isAdmin");
 
-  // Redirect về trang login
   window.location.href = "login.html";
 });
-// Gọi khi trang load
 loadProducts();

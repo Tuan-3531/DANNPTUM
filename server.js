@@ -69,7 +69,9 @@ app.post('/api/products', async (req, res) => {
 });
 
 // XÁC THỰC
-
+app.get("/api/verify", authenticateToken, (req, res) => {
+  res.json({ valid: true, user: req.user });
+});
 app.post('/api/register', async (req, res) => {
   try {
     const user = new User(req.body);
